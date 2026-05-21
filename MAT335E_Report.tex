@@ -1,0 +1,183 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[turkish,english]{babel}
+\usepackage{lmodern}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{hyperref}
+
+\geometry{margin=2.5cm}
+\onehalfspacing
+
+\title{\textbf{BaileysJava Tabanlı Chatin Çok Hatlı WhatsApp Çağrı Merkezi Sistemi}\\
+\large Türkçe ve İngilizce Akademik Rapor}
+\author{Hazırlayan: \textit{Seyit Ahmet Anlaş}}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\selectlanguage{turkish}
+
+\begin{abstract}
+Bu rapor, Chatin adlı çok hatlı WhatsApp çağrı merkezi uygulamasının yazılım mimarisini, kullanım amacını ve iş değerini incelemektedir. Proje, birden fazla WhatsApp hattına sahip şirketlerin müşteri iletişimini merkezi bir panel üzerinden yönetmesini, hatları kullanıcılara atamasını ve mesaj trafiğini gerçek zamanlı olarak takip etmesini amaçlamaktadır. Sistemin backend katmanı olan ChatinJava, WhatsApp bağlantılarını yönetmek için BaileysJava adlı özel geliştirilmiş Java kütüphanesini kullanmaktadır.
+\end{abstract}
+
+\textbf{Anahtar Kelimeler:} WhatsApp çağrı merkezi, çoklu hat yönetimi, Spring Boot, BaileysJava, müşteri iletişimi, gerçek zamanlı mesajlaşma
+
+\section{Giriş}
+
+Günümüzde birçok şirket müşteri iletişimini WhatsApp üzerinden yürütmektedir. Ancak işletmeler büyüdükçe birden fazla WhatsApp hattının yönetimi, kullanıcı atamaları, mesaj takibi ve müşteri taleplerinin izlenebilirliği önemli bir operasyonel problem haline gelmektedir.
+
+Chatin projesi, bu problemi çözmek amacıyla geliştirilmiş çok hatlı bir WhatsApp çağrı merkezi platformudur. Sistem, şirketlerin WhatsApp hatlarını merkezi bir web paneli üzerinden yönetmesini, hatları belirli kullanıcılara atamasını ve gelen müşteri mesajlarını gerçek zamanlı olarak takip etmesini sağlar.
+
+\section{Projenin Amacı}
+
+Projenin temel amacı, birden fazla WhatsApp hattı kullanan şirketler için merkezi, izlenebilir ve rol bazlı bir müşteri iletişimi altyapısı oluşturmaktır.
+
+\begin{itemize}
+    \item Birden fazla WhatsApp hattının tek platformda yönetilmesi,
+    \item Hatların kullanıcı, ekip veya departmanlara atanması,
+    \item Gelen mesajların gerçek zamanlı olarak takip edilmesi,
+    \item Kullanıcıların yalnızca yetkili oldukları hatlara erişebilmesi,
+    \item Müşteri taleplerinin kaybolmadan yönetilmesi.
+\end{itemize}
+
+\section{Sistem Mimarisi}
+
+Chatin ekosistemi üç ana bileşenden oluşmaktadır: frontend arayüzü, Spring Boot tabanlı backend uygulaması ve WhatsApp bağlantı katmanı olarak geliştirilen BaileysJava kütüphanesi.
+
+\subsection{ChatinJava Backend}
+
+ChatinJava, sistemin ana backend uygulamasıdır. Spring Boot kullanılarak geliştirilmiştir. Kullanıcı, şirket, hesap, sohbet, mesaj ve yetkilendirme süreçlerini yönetir. Ayrıca Socket.IO aracılığıyla frontend tarafına gerçek zamanlı olaylar iletir.
+
+\subsection{BaileysJava Kütüphanesi}
+
+BaileysJava, ChatinJava içinde kullanılan özel bir Java kütüphanesidir. Bu kütüphane, WhatsApp Web bağlantı katmanı görevini üstlenir. QR ile oturum açma, bağlantı durumunu izleme, gelen mesaj olaylarını backend'e aktarma ve bağlantı yaşam döngüsünü yönetme gibi görevler bu katmanda gerçekleşir.
+
+\subsection{Chatin\_Nextjs Frontend}
+
+Frontend katmanı, kullanıcıların hesapları, sohbetleri ve mesajları yönetebildiği web arayüzünü sağlar. Kullanıcılar QR kod ile WhatsApp hattı bağlayabilir, kendilerine atanmış hatlar üzerinden müşteri mesajlarını görüntüleyebilir ve yanıtlayabilir.
+
+\section{Kullanım Alanları}
+
+Chatin, özellikle WhatsApp üzerinden yoğun müşteri iletişimi yürüten şirketler için tasarlanmıştır.
+
+\begin{itemize}
+    \item E-ticaret şirketlerinde satış ve destek hatlarının yönetimi,
+    \item Klinik ve randevu bazlı işletmelerde müşteri görüşmelerinin takibi,
+    \item Çok şubeli işletmelerde WhatsApp hatlarının merkezi yönetimi,
+    \item Franchise yapılarda bayi veya lokasyon bazlı iletişim kontrolü,
+    \item Teknik servis ve müşteri destek ekiplerinde çağrı merkezi benzeri kullanım,
+    \item Satış ekiplerinde potansiyel müşteri mesajlarının temsilcilere atanması.
+\end{itemize}
+
+\section{Rol Bazlı Kullanıcı Yapısı}
+
+Sistemde farklı yetki seviyelerine sahip kullanıcı rolleri bulunmaktadır. Superadmin tüm sistemi yönetirken, admin ve manager rolleri şirket veya ekip bazlı operasyonları yönetebilir. Standart kullanıcılar ise yalnızca kendilerine atanmış WhatsApp hatları ve sohbetler üzerinde işlem yapabilir.
+
+Bu rol tabanlı yapı, müşteri iletişiminin hem kontrollü hem de ölçeklenebilir biçimde yönetilmesini sağlar.
+
+\section{Teknik Değerlendirme}
+
+Teknik açıdan Chatin, gerçek zamanlı müşteri iletişimini yönetebilmek için Socket.IO tabanlı olay aktarımını kullanmaktadır. Mesajlar, hesaplar ve oturum bilgileri MongoDB üzerinde saklanmaktadır. WhatsApp bağlantısı ise BaileysJava kütüphanesi aracılığıyla yönetilmektedir.
+
+BaileysJava'nın en önemli katkısı, WhatsApp bağlantı sürecini Java backend içine taşımasıdır. Bu durum, sistem mimarisini sadeleştirmekte ve backend tarafında tek teknoloji ekosistemiyle geliştirme yapılmasını kolaylaştırmaktadır.
+
+\section{Sınırlılıklar ve Riskler}
+
+Proje resmi WhatsApp Business API yerine WhatsApp Web protokolü yaklaşımını kullanmaktadır. Bu nedenle WhatsApp tarafındaki protokol değişiklikleri sistemin bakım ihtiyacını artırabilir. Ayrıca medya mesajları, gelişmiş reaksiyon desteği, otomatik yönlendirme kuralları ve gelişmiş raporlama gibi özellikler ileri geliştirme alanları olarak değerlendirilmektedir.
+
+\section{Gelecek Çalışmalar}
+
+Projenin ileri aşamalarında yapay zeka destekli cevap önerileri, otomatik müşteri niyeti analizi, akıllı hat yönlendirme, CRM entegrasyonları, takım performans panelleri ve SLA takibi gibi özellikler eklenebilir. Ayrıca WhatsApp dışındaki Instagram, web chat ve e-posta gibi kanalların da sisteme dahil edilmesiyle Chatin çok kanallı bir müşteri iletişim platformuna dönüşebilir.
+
+\section{Sonuç}
+
+Chatin, birden fazla WhatsApp hattı kullanan şirketler için merkezi, rol bazlı ve gerçek zamanlı bir müşteri iletişimi yönetim sistemi sunmaktadır. BaileysJava kütüphanesi, bu sistemin WhatsApp bağlantı altyapısını mümkün kılan kritik bileşendir.
+
+\newpage
+\setcounter{section}{0}
+\selectlanguage{english}
+
+\begin{abstract}
+This report analyzes Chatin, a multi-line WhatsApp call center and customer communication management platform. The project is designed for companies that operate multiple WhatsApp lines and need a centralized system to assign those lines to users, monitor conversations, and manage customer interactions in real time. The backend system, ChatinJava, uses a custom Java library named BaileysJava to handle WhatsApp connectivity.
+\end{abstract}
+
+\textbf{Keywords:} WhatsApp call center, multi-line management, Spring Boot, BaileysJava, customer communication, real-time messaging
+
+\section{Introduction}
+
+Today, many companies conduct customer communication through WhatsApp. However, as businesses grow, managing multiple WhatsApp lines, assigning them to users, tracking messages, and maintaining operational visibility become significant challenges.
+
+The Chatin project was developed to address this problem. It offers a multi-line WhatsApp call center platform that allows companies to manage their WhatsApp lines from a centralized web panel, assign lines to specific users, and track customer messages in real time.
+
+\section{Project Objective}
+
+The main objective of the project is to provide a centralized, traceable, and role-based customer communication infrastructure for companies using multiple WhatsApp lines.
+
+\begin{itemize}
+    \item Managing multiple WhatsApp lines from a single platform,
+    \item Assigning lines to users, teams, or departments,
+    \item Tracking incoming messages in real time,
+    \item Restricting users to only the lines they are authorized to access,
+    \item Managing customer requests in a measurable and traceable way.
+\end{itemize}
+
+\section{System Architecture}
+
+The Chatin ecosystem consists of three main components: the frontend interface, the Spring Boot backend application, and the WhatsApp connectivity layer implemented through the BaileysJava library.
+
+\subsection{ChatinJava Backend}
+
+ChatinJava is the main backend application of the system. It is built with Spring Boot and manages users, companies, accounts, chats, messages, and authorization processes. It also delivers real-time events to the frontend using Socket.IO.
+
+\subsection{BaileysJava Library}
+
+BaileysJava is a custom Java library used inside ChatinJava. It acts as the WhatsApp Web connectivity layer. Its responsibilities include QR-based login, connection status tracking, forwarding incoming message events to the backend, and managing the connection lifecycle.
+
+\subsection{Chatin\_Nextjs Frontend}
+
+The frontend layer provides the web interface where users manage accounts, chats, and messages. Users can connect WhatsApp lines through QR codes, view assigned conversations, and respond to customer messages.
+
+\section{Use Cases}
+
+Chatin is designed for companies that heavily rely on WhatsApp for customer communication.
+
+\begin{itemize}
+    \item Managing sales and support lines in e-commerce companies,
+    \item Tracking customer conversations in clinics and appointment-based businesses,
+    \item Centralized management of WhatsApp lines in multi-branch organizations,
+    \item Communication control in franchise or dealer-based structures,
+    \item Call center-like workflows for technical service and customer support teams,
+    \item Assigning potential customer messages to sales representatives.
+\end{itemize}
+
+\section{Role-Based User Model}
+
+The system includes multiple user roles with different permission levels. The superadmin manages the entire system, while admins and managers control company-level or team-level operations. Standard users can only access the WhatsApp lines and conversations assigned to them.
+
+This role-based model enables customer communication to be managed in a controlled and scalable way.
+
+\section{Technical Evaluation}
+
+From a technical perspective, Chatin uses Socket.IO-based event delivery to support real-time customer communication. Messages, accounts, and authentication states are stored in MongoDB. WhatsApp connectivity is managed through the BaileysJava library.
+
+The most important contribution of BaileysJava is that it brings the WhatsApp connection layer directly into the Java backend. This simplifies the system architecture and allows the backend to be developed within a unified technology ecosystem.
+
+\section{Limitations and Risks}
+
+The project uses a WhatsApp Web protocol approach rather than the official WhatsApp Business API. Therefore, protocol changes on WhatsApp's side may increase maintenance requirements. In addition, media messaging, advanced reaction support, automatic routing rules, and detailed analytics remain future development areas.
+
+\section{Future Work}
+
+Future versions of the project may include AI-assisted response suggestions, automatic customer intent analysis, smart line routing, CRM integrations, team performance dashboards, and SLA tracking. The platform may also evolve into an omnichannel customer communication system by adding channels such as Instagram, web chat, and email.
+
+\section{Conclusion}
+
+Chatin provides a centralized, role-based, and real-time customer communication management system for companies using multiple WhatsApp lines. The BaileysJava library is the critical component that enables the WhatsApp connectivity infrastructure of the system.
+
+\end{document}
